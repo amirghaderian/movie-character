@@ -1,5 +1,8 @@
 import "./App.css";
+import Navbar from "./components/Navbar";
 
 const App = () => {
-  return <h1>start project</h1>;
+  return <div className="app"><Navbar />
+  <div className="main"></div></div>;
 };
+export default App
