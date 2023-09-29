@@ -1,10 +1,15 @@
-import {EyeIcon as Eye} from "@heroicons/react/24/outline"
-const CharacterList = ({ allCharacters }) => {
+import { EyeIcon as Eye } from "@heroicons/react/24/outline";
+import Loader from "./Loader";
+const CharacterList = ({ allCharacters, isLoading }) => {
   return (
     <div className="characters-list">
-      {allCharacters.map((item) => {
-        return <Character key={item.id} item={item} />;
-      })}
+      {isLoading ? (
+        <Loader />
+      ) : (
+        allCharacters.map((item) => {
+          return <Character key={item.id} item={item} />;
+        })
+      )}
     </div>
   );
 };
@@ -24,7 +29,9 @@ const Character = ({ item }) => {
         <span> {item.status} </span>
         <span>{item.species}</span>
       </div>
-      <button className="icon red"><Eye/></button>
+      <button className="icon red">
+        <Eye />
+      </button>
     </div>
   );
 };
