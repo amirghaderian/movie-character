@@ -1,9 +1,9 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
-import { allCharacters } from "../data/data";
+import toast, { Toaster } from "react-hot-toast";
 import "./App.css";
 import CharacterDetail from "./components/CharacterDetail";
 import CharacterList from "./components/CharacterList";
-import Loader from "./components/Loader";
 import Navbar from "./components/Navbar";
 
 const App = () => {
@@ -11,21 +11,29 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
-      setIsLoading(true);
-      const res = await fetch("https://rickandmortyapi.com/api/character");
-      const data = await res.json();
-      setCharacter(data.results.slice(0, 2));
-      console.log(data.results);
-      setIsLoading(false);
+      try {
+        setIsLoading(true);
+        const { data } = await axios.get(
+          "https://rickandmortyapi.com/api/charactera"
+        );
+        console.log(data);
+        setCharacter(data.results.slice(0, 2));
+      } catch (err) {
+        console.log(err)
+        toast.error(err.response.data.error);
+      } finally {
+        setIsLoading(false);
+      }
     };
     fetchData();
   }, []);
 
   return (
     <div className="app">
+      <Toaster />
       <Navbar searchResult={characters} />
       <div className="main">
-        <CharacterList allCharacters={characters} isLoading={isLoading}/>
+        <CharacterList allCharacters={characters} isLoading={isLoading} />
 
         <CharacterDetail />
       </div>
