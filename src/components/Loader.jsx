@@ -1,6 +1,6 @@
 const Loader = () => {
   return (
-    <p>Loading Data ...</p>
+    <p style={{color:"white"}}>Loading Data ...</p>
   )
 }
 
