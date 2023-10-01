@@ -1,4 +1,3 @@
-import { character, episodes } from "../../data/data";
 import { ArrowUpCircleIcon as ArrowUp } from "@heroicons/react/24/outline";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -7,33 +6,50 @@ import toast from "react-hot-toast";
 
 const CharacterDetail = ({ selectedId }) => {
   const [selectedcharacter, setSelecteCharacter] = useState({});
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
+  const [episodes, setEpisodes] = useState([]);
   useEffect(() => {
+    
     const fetchData = async () => {
-      try {setIsLoading(true)
+      try {
+        setIsLoading(true);
         const { data } = await axios.get(
           `https://rickandmortyapi.com/api/character/${selectedId}`
         );
         setSelecteCharacter(data);
+        
+        const episodesId = data.episode.map((e) =>
+          (e.split("/").at(-1))
+        );
+        const { data: episodeData } = await axios.get(
+          `https://rickandmortyapi.com/api/episode/${episodesId}`
+        );
+        setEpisodes([episodeData].flat().slice(0,6))
       } catch (error) {
-        setSelecteCharacter()
-        toast.error(error.response.data.error)        
-      } finally{setIsLoading(false)}
+        setSelecteCharacter();
+        toast.error(error.response.data.error);
+      } finally {
+        setIsLoading(false);
+      }
     };
-    console.log(selectedcharacter)
-    if (selectedcharacter ==="" )
+    if (selectedcharacter === "")
       return (
         <div style={{ flex: 1, color: "white" }}>Please select a Character</div>
       );
     if (selectedId !== null) fetchData();
   }, [selectedId]);
 
-  if(isLoading)return <div style={{ flex: 1, color: "white" }}><Loader/></div>
+  if (isLoading)
+    return (
+      <div style={{ flex: 1, color: "white" }}>
+        <Loader />
+      </div>
+    );
   if (!selectedId || !selectedcharacter)
     return (
       <div style={{ flex: 1, color: "white" }}>Please select a Character</div>
     );
-  return (
+    return (
     <div style={{ flex: 1 }}>
       <div className="character-detail">
         <img
