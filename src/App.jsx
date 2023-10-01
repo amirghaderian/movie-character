@@ -10,6 +10,7 @@ const App = () => {
   const [characters, setCharacter] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [query, setQuery] = useState("");
+  const [selectedId, setSelectedId] = useState(null)
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -31,21 +32,18 @@ const App = () => {
     }
     fetchData();
   }, [query]);
+const handleSelectedCaracter = (id) =>{
+  setSelectedId(preveId => preveId===id ? null :id)
+}
 
-  useEffect(() => {
-    console.log("Call EFFECT ON FIRST MOUNT");
-  }, []);
-  useEffect(() => {
-    console.log("Call EFFECT ON EVERY RENDERS");
-  });
   return (
     <div className="app">
       <Toaster />
       <Navbar searchResult={characters} query={query} setQuery={setQuery} />
       <div className="main">
-        <CharacterList allCharacters={characters} isLoading={isLoading} />
+        <CharacterList allCharacters={characters} isLoading={isLoading}  onSelectCharacter={handleSelectedCaracter} selectedId={selectedId}/>
 
-        <CharacterDetail />
+        <CharacterDetail selectedId={selectedId} setSelectedId={setSelectedId} handleSelectedCaracter={handleSelectedCaracter}/>
       </div>
     </div>
   );
