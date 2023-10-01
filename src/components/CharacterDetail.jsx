@@ -4,12 +4,11 @@ import { useEffect, useState } from "react";
 import Loader from "./Loader";
 import toast from "react-hot-toast";
 
-const CharacterDetail = ({ selectedId }) => {
+const CharacterDetail = ({ selectedId, onAddFavourite, isAddToFavourit }) => {
   const [selectedcharacter, setSelecteCharacter] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [episodes, setEpisodes] = useState([]);
   useEffect(() => {
-    
     const fetchData = async () => {
       try {
         setIsLoading(true);
@@ -17,14 +16,12 @@ const CharacterDetail = ({ selectedId }) => {
           `https://rickandmortyapi.com/api/character/${selectedId}`
         );
         setSelecteCharacter(data);
-        
-        const episodesId = data.episode.map((e) =>
-          (e.split("/").at(-1))
-        );
+
+        const episodesId = data.episode.map((e) => e.split("/").at(-1));
         const { data: episodeData } = await axios.get(
           `https://rickandmortyapi.com/api/episode/${episodesId}`
         );
-        setEpisodes([episodeData].flat().slice(0,6))
+        setEpisodes([episodeData].flat().slice(0, 6));
       } catch (error) {
         setSelecteCharacter();
         toast.error(error.response.data.error);
@@ -49,7 +46,7 @@ const CharacterDetail = ({ selectedId }) => {
     return (
       <div style={{ flex: 1, color: "white" }}>Please select a Character</div>
     );
-    return (
+  return (
     <div style={{ flex: 1 }}>
       <div className="character-detail">
         <img
@@ -78,9 +75,18 @@ const CharacterDetail = ({ selectedId }) => {
                 ? ""
                 : selectedcharacter.location.name}
             </p>
-          </div>{" "}
+          </div>
           <div className="actions">
-            <button className="btn btn--primary">Add to Favorite</button>{" "}
+            {isAddToFavourit ? (
+              <p>Already Added To Favourites ✅</p>
+            ) : (
+              <button
+                className="btn btn--primary"
+                onClick={() => onAddFavourite(selectedcharacter)}
+              >
+                Add to Favorite
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -97,7 +103,7 @@ const CharacterDetail = ({ selectedId }) => {
             return (
               <li key={item.id}>
                 <div>
-                  {String(index + 1).padStart(2, "0")}&nbsp;{item.episode} :{" "}
+                  {String(index + 1).padStart(2, "0")}&nbsp;{item.episode} :
                   <strong>{item.name}</strong>
                 </div>
                 <div className="badge badge--secondary">{item.air_date}</div>

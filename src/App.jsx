@@ -4,13 +4,14 @@ import toast, { Toaster } from "react-hot-toast";
 import "./App.css";
 import CharacterDetail from "./components/CharacterDetail";
 import CharacterList from "./components/CharacterList";
-import Navbar from "./components/Navbar";
+import Navbar, { Favourites } from "./components/Navbar";
 
 const App = () => {
   const [characters, setCharacter] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState(null)
+  const [favourites, setFavourites] = useState([])
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -35,15 +36,18 @@ const App = () => {
 const handleSelectedCaracter = (id) =>{
   setSelectedId(preveId => preveId===id ? null :id)
 }
-
-  return (
+const handleAddFavourite = (character) =>{
+  setFavourites([...favourites,character])
+}
+const isAddToFavourit = favourites.map(fav=>fav.id).includes(selectedId)
+return (
     <div className="app">
       <Toaster />
-      <Navbar searchResult={characters} query={query} setQuery={setQuery} />
+      <Navbar searchResult={characters} query={query} setQuery={setQuery} numOfFavorites={favourites.length} />
       <div className="main">
         <CharacterList allCharacters={characters} isLoading={isLoading}  onSelectCharacter={handleSelectedCaracter} selectedId={selectedId}/>
 
-        <CharacterDetail selectedId={selectedId} setSelectedId={setSelectedId} handleSelectedCaracter={handleSelectedCaracter}/>
+        <CharacterDetail selectedId={selectedId} setSelectedId={setSelectedId} handleSelectedCaracter={handleSelectedCaracter} onAddFavourite={handleAddFavourite} isAddToFavourit={isAddToFavourit}/>
       </div>
     </div>
   );
