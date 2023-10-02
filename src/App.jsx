@@ -12,7 +12,11 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState(null);
-  const [favourites, setFavourites] = useState([]);
+  const [favourites, setFavourites] = useState(()=> JSON.parse(localStorage.getItem("favourites")) || []);
+  useEffect(()=>{
+    localStorage.setItem("favourites",JSON.stringify(favourites))
+  })
+
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
@@ -35,7 +39,7 @@ const App = () => {
         }
       }
     };
-
+   
     // if (query.length <= 2) {
     //   setCharacter([]);
     //   return;
