@@ -4,6 +4,7 @@ import toast, { Toaster } from "react-hot-toast";
 import "./App.css";
 import CharacterDetail from "./components/CharacterDetail";
 import CharacterList from "./components/CharacterList";
+import Modal from "./components/Modal";
 import Navbar, { Favourites } from "./components/Navbar";
 
 const App = () => {
@@ -12,13 +13,6 @@ const App = () => {
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState(null);
   const [favourites, setFavourites] = useState([]);
-  const [count, setCount] = useState(0);
-  useEffect(() => {
-    const interval = setInterval(() => setCount((c) => c + 1), 1000);
-    return () => {
-      clearInterval(interval);
-    };
-  }, [count]);
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
@@ -57,11 +51,14 @@ const App = () => {
   const handleAddFavourite = (character) => {
     setFavourites([...favourites, character]);
   };
+  const handleDeleteFavourite = (id) =>{
+    const filterd = favourites.filter((item)=>item.id !== id)
+    setFavourites(filterd)
+  }
   const isAddToFavourit = favourites.map((fav) => fav.id).includes(selectedId);
   return (
     <div className="app">
       <div style={{ color: "#fff" }}>
-        {count}{" "}
         <button
           style={{ color: "#fff" }}
           onClick={() => setCount((prev) => prev + 1)}
@@ -74,7 +71,8 @@ const App = () => {
         searchResult={characters}
         query={query}
         setQuery={setQuery}
-        numOfFavorites={favourites.length}
+        favourites={favourites}
+        onDeleteFavourite={handleDeleteFavourite}
       />
       <div className="main">
         <CharacterList
